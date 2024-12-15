@@ -12,35 +12,24 @@ train_motor = DCMotor(Port.A)
 # Initialize the sensor.
 sensor = ColorDistanceSensor(Port.B)
 
-#Override Red
-#Color.RED = Color(h=0, s=82, v=55)
-
-my_colors = (Color.RED, Color.BLACK)
+my_colors = (Color.RED, Color.YELLOW, Color.BLACK)
 
 sensor.detectable_colors(my_colors)
 
-# This is a function that waits for a desired color.
-def wait_for_color(desired_color):
-    # While the color is not the desired color, we keep waiting.
-    while sensor.color() != desired_color:
-        wait(20)
-
 while True:
-   # Here you can make your train/vehicle go forward.
-    train_motor.dc(40)
+    # Start the trolley
+    train_motor.dc(45)
+    hub.light.off()
 
-    print("Waiting for red ...")
-    wait_for_color(Color.RED)
-
-    # Here you can make your train/vehicle go backward.
-    train_motor.stop()
-    wait(5000)
-
-# Choose the "power" level for your train. Negative means reverse.
-#train_motor.dc(40)
-#wait(3000)
-
-#train_motor.dc(-40)
-#wait(3000)
-
-#train_motor.stop()
+    if sensor.color() == Color.RED:
+        # 5 second stop for passengers
+        print("Red")
+        train_motor.stop()
+        hub.light.on(Color.RED);
+        wait(5000)
+    elif sensor.color() == Color.YELLOW:
+        # boost the speed for 1.5 seconds for a corner so the trolley doesn't slow down
+        print("Yellow")
+        train_motor.dc(55)
+        hub.light.on(Color.YELLOW);
+        wait(2000)
